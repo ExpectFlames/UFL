@@ -5,142 +5,67 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Project Alpha Dashboard</title>
   <style>
-    :root {
-      --bg: #06111f;
-      --panel: #0f1b2d;
-      --panel2: #12243b;
-      --text: #eef6ff;
-      --muted: #93a9c4;
-      --blue: #3b82f6;
-      --green: #22c55e;
-      --red: #ef4444;
-      --amber: #f59e0b;
-      --border: #263954;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top left, #16345a, var(--bg) 42%);
-      color: var(--text);
-    }
-    .wrap { max-width: 1180px; margin: 0 auto; padding: 18px; }
-    .hero, .card {
-      background: linear-gradient(180deg, rgba(18,36,59,.95), rgba(15,27,45,.95));
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 18px;
-      box-shadow: 0 18px 50px rgba(0,0,0,.24);
-    }
-    .hero { margin-bottom: 16px; }
-    .eyebrow { color: #8ec5ff; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
-    h1 { margin: 8px 0 6px; font-size: clamp(28px, 6vw, 48px); }
-    h2 { margin: 0 0 12px; font-size: 18px; }
-    p { color: var(--muted); line-height: 1.5; }
-    .grid { display: grid; gap: 14px; }
-    .metrics { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin-bottom: 14px; }
-    .main { grid-template-columns: 1.6fr .9fr; margin-bottom: 14px; }
-    .three { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
-    .label { color: var(--muted); font-size: 12px; }
-    .value { font-size: 30px; font-weight: 800; margin-top: 8px; }
-    .positive { color: var(--green); }
-    .warning { color: var(--amber); }
-    .danger { color: var(--red); }
-    .chart { height: 260px; display: flex; align-items: end; gap: 12px; padding-top: 14px; }
-    .bar { flex: 1; min-width: 32px; border-radius: 12px 12px 4px 4px; background: linear-gradient(180deg, var(--blue), #1d4ed8); position: relative; }
-    .bar.red { background: linear-gradient(180deg, var(--red), #991b1b); }
-    .bar.green { background: linear-gradient(180deg, var(--green), #15803d); }
-    .bar span { position: absolute; bottom: -26px; width: 100%; text-align: center; color: var(--muted); font-size: 11px; }
-    .row { display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
-    .row:last-child { border-bottom: 0; }
-    .pill { display:inline-block; padding:5px 9px; border-radius:999px; border:1px solid var(--border); color:var(--muted); font-size:12px; }
-    .calendar { display:grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-    .day { min-height: 58px; border:1px solid var(--border); border-radius:12px; padding:7px; background:rgba(255,255,255,.03); font-size:12px; }
-    .event { display:block; margin-top:5px; font-size:10px; color:#bfdbfe; }
-    .circle-wrap { display:flex; align-items:center; gap:16px; }
-    .circle {
-      width: 138px; height: 138px; border-radius:50%;
-      background: conic-gradient(var(--amber) 0 40%, var(--green) 40% 55%, var(--blue) 55% 100%);
-      display:flex; align-items:center; justify-content:center;
-    }
-    .circle-inner { width:88px; height:88px; border-radius:50%; background:var(--panel); display:flex; align-items:center; justify-content:center; font-weight:800; }
-    textarea { width:100%; min-height:90px; border-radius:14px; border:1px solid var(--border); background:#071221; color:var(--text); padding:12px; }
-    button { border:0; border-radius:14px; padding:12px 14px; background:var(--blue); color:white; font-weight:700; width:100%; margin-top:10px; }
-    @media (max-width: 800px) { .main { grid-template-columns: 1fr; } .chart { height: 220px; } }
+    :root{--bg:#050b14;--panel:#0c1728;--panel2:#101f35;--text:#ecf7ff;--muted:#91a7c0;--line:#223852;--blue:#38bdf8;--green:#22c55e;--red:#ef4444;--amber:#f59e0b;--purple:#a855f7}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top left,#12345b 0,#050b14 42%,#020617 100%);color:var(--text);font-family:Arial,sans-serif}.wrap{max-width:1220px;margin:0 auto;padding:16px}.hero,.card{background:linear-gradient(180deg,rgba(16,31,53,.96),rgba(12,23,40,.96));border:1px solid var(--line);border-radius:22px;padding:16px;box-shadow:0 18px 50px rgba(0,0,0,.26)}.hero{display:flex;gap:16px;justify-content:space-between;align-items:flex-start;margin-bottom:14px}.eyebrow{color:#8bdcff;font-size:12px;letter-spacing:.1em;text-transform:uppercase}h1{margin:8px 0 6px;font-size:clamp(28px,7vw,48px)}h2{margin:0 0 12px;font-size:18px}p{color:var(--muted);line-height:1.45}.grid{display:grid;gap:14px}.metrics{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-bottom:14px}.main{grid-template-columns:1.5fr .9fr;margin-bottom:14px}.three{grid-template-columns:repeat(auto-fit,minmax(270px,1fr));margin-bottom:14px}.label{color:var(--muted);font-size:12px}.digital{font-family:'Courier New',monospace;letter-spacing:.06em;text-shadow:0 0 14px rgba(56,189,248,.35)}.value{font-size:32px;font-weight:900;margin-top:8px}.positive{color:var(--green)}.danger{color:var(--red)}.warning{color:var(--amber)}.blue{color:var(--blue)}.pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted);font-size:12px;margin-right:6px;margin-top:6px}.chart{height:250px;display:flex;align-items:end;gap:10px;padding:12px 0 28px}.bar{flex:1;min-width:24px;border-radius:12px 12px 4px 4px;position:relative;background:linear-gradient(180deg,var(--blue),#1d4ed8)}.bar.green{background:linear-gradient(180deg,var(--green),#15803d)}.bar.red{background:linear-gradient(180deg,var(--red),#991b1b)}.bar span{position:absolute;bottom:-24px;width:100%;text-align:center;color:var(--muted);font-size:10px}.row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}.circle-wrap{display:flex;align-items:center;gap:16px}.circle{width:150px;height:150px;border-radius:50%;background:conic-gradient(var(--amber) 0 var(--utilDeg),var(--green) var(--utilDeg) var(--cashDeg),var(--blue) var(--cashDeg) 360deg);display:flex;align-items:center;justify-content:center;box-shadow:0 0 28px rgba(56,189,248,.12)}.circle-inner{width:92px;height:92px;border-radius:50%;background:var(--panel);display:flex;align-items:center;justify-content:center;font-weight:900}.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.day{min-height:60px;border:1px solid var(--line);border-radius:12px;padding:7px;background:rgba(255,255,255,.03);font-size:12px}.event{display:block;margin-top:5px;font-size:10px;color:#bfdbfe}.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}input,select,textarea{width:100%;border-radius:12px;border:1px solid var(--line);background:#06111f;color:var(--text);padding:11px}textarea{min-height:88px}button{border:0;border-radius:12px;padding:12px 14px;background:var(--blue);color:#03111f;font-weight:900;cursor:pointer}button.secondary{background:#1f2937;color:var(--text);border:1px solid var(--line)}button.dangerBtn{background:#7f1d1d;color:white}.actions{display:flex;gap:10px;flex-wrap:wrap}.actions button{flex:1;min-width:140px}.ticker{display:flex;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#06111f;margin-top:10px}.ticker-inner{white-space:nowrap;animation:scroll 24s linear infinite;padding:10px;color:#bfdbfe}@keyframes scroll{from{transform:translateX(100%)}to{transform:translateX(-100%)}}.small{font-size:12px;color:var(--muted)}@media(max-width:850px){.hero{display:block}.main{grid-template-columns:1fr}.chart{height:220px}.calendar{grid-template-columns:repeat(2,1fr)}}
   </style>
 </head>
 <body>
   <main class="wrap">
     <section class="hero">
-      <div class="eyebrow">Project Alpha • Financial Command Center</div>
-      <h1>Joseph's Dashboard</h1>
-      <p>One clear view for cash, cards, bills, business money, calendar dates, and weekly financial control.</p>
-      <span class="pill">Live preview v0.2</span>
-      <span class="pill">Mobile ready</span>
-      <span class="pill">Charts first</span>
+      <div><div class="eyebrow">Project Alpha • Self-Edit Financial Command Center</div><h1>Joseph's Dashboard</h1><p>Tap in your own numbers. This version saves to this browser/device first so you can lock in the app before we add a shared backend.</p><span class="pill">Self-edit v0.3</span><span class="pill">Digital display</span><span class="pill">Local save</span></div>
+      <div class="card" style="min-width:190px"><div class="label">Current Review</div><div class="value digital blue" id="todayBox">--</div><div class="small">Weekly finance control</div></div>
     </section>
 
     <section class="grid metrics">
-      <div class="card"><div class="label">Total Cash</div><div class="value positive">$2,510</div></div>
-      <div class="card"><div class="label">Card Debt</div><div class="value danger">$990</div></div>
-      <div class="card"><div class="label">Utilization</div><div class="value warning">39.6%</div></div>
-      <div class="card"><div class="label">Monthly Bills</div><div class="value">$1,788</div></div>
+      <div class="card"><div class="label">Total Cash</div><div class="value digital positive" id="totalCash">$0</div></div>
+      <div class="card"><div class="label">Card Debt</div><div class="value digital danger" id="cardDebt">$0</div></div>
+      <div class="card"><div class="label">Utilization</div><div class="value digital warning" id="utilization">0%</div></div>
+      <div class="card"><div class="label">Monthly Bills</div><div class="value digital" id="monthlyBills">$0</div></div>
     </section>
 
     <section class="grid main">
-      <div class="card">
-        <h2>Cash vs Debt Trend</h2>
-        <div class="chart">
-          <div class="bar green" style="height:62%"><span>Cash W1</span></div>
-          <div class="bar red" style="height:49%"><span>Debt W1</span></div>
-          <div class="bar green" style="height:70%"><span>Cash W2</span></div>
-          <div class="bar red" style="height:44%"><span>Debt W2</span></div>
-          <div class="bar green" style="height:82%"><span>Cash W3</span></div>
-          <div class="bar red" style="height:40%"><span>Debt W3</span></div>
-        </div>
-      </div>
-      <div class="card">
-        <h2>Money Split</h2>
-        <div class="circle-wrap">
-          <div class="circle"><div class="circle-inner">View</div></div>
-          <div>
-            <p><b class="warning">40%</b> Credit use</p>
-            <p><b class="positive">15%</b> Business cash</p>
-            <p><b style="color:#8ec5ff">45%</b> Personal cash</p>
-          </div>
-        </div>
-      </div>
+      <div class="card"><h2>Cash vs Debt Trend</h2><div class="chart" id="trendChart"></div></div>
+      <div class="card"><h2>Money Split</h2><div class="circle-wrap"><div class="circle" id="moneyCircle"><div class="circle-inner digital" id="circleText">0%</div></div><div><p><b class="warning" id="circleUtil">0%</b> credit use</p><p><b class="positive" id="circleCash">$0</b> cash</p><p><b class="blue" id="circleBiz">$0</b> business cash</p></div></div></div>
     </section>
 
     <section class="grid three">
-      <div class="card">
-        <h2>Upcoming Bills</h2>
-        <div class="row"><div>ChatGPT<br><span class="label">May 1</span></div><b>$23</b></div>
-        <div class="row"><div>Insurance<br><span class="label">May 2</span></div><b>$165</b></div>
-        <div class="row"><div>Car Payment<br><span class="label">May 6</span></div><b>$400</b></div>
-        <div class="row"><div>Mortgage<br><span class="label">May 11</span></div><b>$1,200</b></div>
-      </div>
-      <div class="card">
-        <h2>Credit Cards</h2>
-        <div class="row"><div>Merrick<br><span class="label">33% utilization</span></div><b>$330</b></div>
-        <div class="row"><div>Credit One<br><span class="label">38% utilization</span></div><b>$190</b></div>
-        <div class="row"><div>Prosper<br><span class="label">47% utilization</span></div><b>$470</b></div>
-      </div>
-      <div class="card">
-        <h2>Prompt Update Box</h2>
-        <p>Future version: type a change here and update the same data source.</p>
-        <textarea placeholder="Example: Update Prosper to $420 and mark mortgage paid."></textarea>
-        <button>Log Update</button>
-      </div>
+      <div class="card"><h2>Upcoming Bills</h2><div id="billList"></div></div>
+      <div class="card"><h2>Credit Cards</h2><div id="cardList"></div></div>
+      <div class="card"><h2>News / Market Stream</h2><p class="small">Manual stream for now. Live news later needs a backend or news API.</p><div class="ticker"><div class="ticker-inner" id="newsTicker"></div></div><div id="newsList" style="margin-top:12px"></div></div>
     </section>
 
-    <section class="card" style="margin-top:14px">
-      <h2>Financial Calendar</h2>
-      <div class="calendar">
-        <div class="day">1<span class="event">ChatGPT</span></div><div class="day">2<span class="event">Insurance</span></div><div class="day">3</div><div class="day">4</div><div class="day">5</div><div class="day">6<span class="event">Car</span></div><div class="day">7</div>
-        <div class="day">8<span class="event">Payday</span></div><div class="day">9</div><div class="day">10</div><div class="day">11<span class="event">Mortgage</span></div><div class="day">12</div><div class="day">13</div><div class="day">14<span class="event">Statement</span></div>
-      </div>
+    <section class="card" style="margin-bottom:14px"><h2>Financial Calendar</h2><div class="calendar" id="calendarGrid"></div></section>
+
+    <section class="grid three">
+      <div class="card"><h2>Update Account</h2><div class="form-grid"><input id="accountName" placeholder="Account name"><input id="accountBalance" type="number" placeholder="Balance"><select id="accountScope"><option value="personal">Personal</option><option value="business">Business</option></select></div><button onclick="saveAccount()">Save Account</button></div>
+      <div class="card"><h2>Update Credit Card</h2><div class="form-grid"><input id="cardName" placeholder="Card name"><input id="cardBalance" type="number" placeholder="Balance"><input id="cardLimit" type="number" placeholder="Limit"><input id="cardDue" placeholder="Due date"></div><button onclick="saveCard()">Save Card</button></div>
+      <div class="card"><h2>Update Bill</h2><div class="form-grid"><input id="billName" placeholder="Bill name"><input id="billAmount" type="number" placeholder="Amount"><input id="billDue" placeholder="Due date"><input id="billCategory" placeholder="Category"></div><button onclick="saveBill()">Save Bill</button></div>
+    </section>
+
+    <section class="grid three">
+      <div class="card"><h2>Add Calendar Event</h2><div class="form-grid"><input id="eventDay" type="number" min="1" max="31" placeholder="Day"><input id="eventText" placeholder="Event"></div><button onclick="saveEvent()">Save Event</button></div>
+      <div class="card"><h2>Add News Item</h2><input id="newsText" placeholder="Headline / market note"><button onclick="saveNews()">Add News</button></div>
+      <div class="card"><h2>Backup / Control</h2><div class="actions"><button onclick="exportData()">Export Data</button><button class="secondary" onclick="importDataPrompt()">Import Data</button><button class="dangerBtn" onclick="resetData()">Reset Demo</button></div><p class="small">Your edits save in this browser's local storage. A future backend will make it shared between phones.</p></div>
     </section>
   </main>
+
+  <script>
+    const KEY='projectAlphaSelfEditV1';
+    const demo={accounts:[{name:'Personal Checking',balance:1840,scope:'personal'},{name:'Business Checking',balance:420,scope:'business'},{name:'Emergency Savings',balance:250,scope:'personal'}],cards:[{name:'Merrick',balance:330,limit:1000,due:'May 7'},{name:'Credit One',balance:190,limit:500,due:'May 3'},{name:'Prosper',balance:470,limit:1000,due:'May 11'}],bills:[{name:'ChatGPT',amount:23,due:'May 1',category:'Subscription'},{name:'Insurance',amount:165,due:'May 2',category:'Auto'},{name:'Car Payment',amount:400,due:'May 6',category:'Auto'},{name:'Mortgage',amount:1200,due:'May 11',category:'Housing'}],events:[{day:1,text:'ChatGPT'},{day:2,text:'Insurance'},{day:6,text:'Car'},{day:8,text:'Payday'},{day:11,text:'Mortgage'},{day:14,text:'Statement'}],news:['Review card statement dates before payday','Business cash should stay separated','Watch utilization under 30% first, then under 10%'],history:[{label:'W1',cash:1650,debt:1120},{label:'W2',cash:1825,debt:1085},{label:'W3',cash:2110,debt:1030},{label:'W4',cash:2510,debt:990}]};
+    let data=load();
+    function load(){try{return JSON.parse(localStorage.getItem(KEY))||demo}catch(e){return demo}}
+    function persist(){localStorage.setItem(KEY,JSON.stringify(data));render()}
+    function money(n){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(Number(n)||0)}
+    function render(){const now=new Date();document.getElementById('todayBox').textContent=now.toLocaleDateString('en-US',{month:'short',day:'numeric'});const cash=data.accounts.reduce((s,a)=>s+Number(a.balance||0),0);const biz=data.accounts.filter(a=>a.scope==='business').reduce((s,a)=>s+Number(a.balance||0),0);const debt=data.cards.reduce((s,c)=>s+Number(c.balance||0),0);const lim=data.cards.reduce((s,c)=>s+Number(c.limit||0),0);const util=lim?debt/lim*100:0;const bills=data.bills.reduce((s,b)=>s+Number(b.amount||0),0);totalCash.textContent=money(cash);cardDebt.textContent=money(debt);utilization.textContent=util.toFixed(1)+'%';monthlyBills.textContent=money(bills);circleText.textContent=util.toFixed(0)+'%';circleUtil.textContent=util.toFixed(1)+'%';circleCash.textContent=money(cash);circleBiz.textContent=money(biz);moneyCircle.style.setProperty('--utilDeg',(util*3.6)+'deg');moneyCircle.style.setProperty('--cashDeg',Math.min(360,(util*3.6)+120)+'deg');billList.innerHTML=data.bills.map(b=>`<div class="row"><div><b>${b.name}</b><br><span class="label">${b.due} • ${b.category||'Bill'}</span></div><b>${money(b.amount)}</b></div>`).join('');cardList.innerHTML=data.cards.map(c=>{let u=c.limit?c.balance/c.limit*100:0;return `<div class="row"><div><b>${c.name}</b><br><span class="label">${u.toFixed(1)}% utilization • due ${c.due||'-'}</span></div><b>${money(c.balance)}</b></div>`}).join('');newsTicker.textContent=data.news.join('     •     ');newsList.innerHTML=data.news.slice(-4).reverse().map(n=>`<div class="row"><div>${n}</div></div>`).join('');calendarGrid.innerHTML='';for(let i=1;i<=31;i++){let ev=data.events.filter(e=>Number(e.day)===i).map(e=>`<span class="event">${e.text}</span>`).join('');calendarGrid.innerHTML+=`<div class="day">${i}${ev}</div>`}let max=Math.max(...data.history.map(h=>Math.max(h.cash,h.debt)),1);trendChart.innerHTML=data.history.map(h=>`<div class="bar green" style="height:${Math.max(8,h.cash/max*95)}%"><span>${h.label} cash</span></div><div class="bar red" style="height:${Math.max(8,h.debt/max*95)}%"><span>${h.label} debt</span></div>`).join('')}
+    function upsert(list,item,key='name'){const i=list.findIndex(x=>String(x[key]).toLowerCase()===String(item[key]).toLowerCase());if(i>=0)list[i]={...list[i],...item};else list.push(item)}
+    function saveAccount(){upsert(data.accounts,{name:accountName.value||'Account',balance:Number(accountBalance.value||0),scope:accountScope.value});persist()}
+    function saveCard(){upsert(data.cards,{name:cardName.value||'Card',balance:Number(cardBalance.value||0),limit:Number(cardLimit.value||0),due:cardDue.value||'-'});persist()}
+    function saveBill(){upsert(data.bills,{name:billName.value||'Bill',amount:Number(billAmount.value||0),due:billDue.value||'-',category:billCategory.value||'Bill'});persist()}
+    function saveEvent(){data.events.push({day:Number(eventDay.value||1),text:eventText.value||'Event'});persist()}
+    function saveNews(){if(newsText.value.trim()){data.news.push(newsText.value.trim());persist();newsText.value=''}}
+    function exportData(){navigator.clipboard.writeText(JSON.stringify(data,null,2));alert('Project Alpha data copied to clipboard.')}
+    function importDataPrompt(){const raw=prompt('Paste Project Alpha JSON backup');if(!raw)return;try{data=JSON.parse(raw);persist()}catch(e){alert('That JSON did not import.')}}
+    function resetData(){if(confirm('Reset this browser to demo data?')){data=JSON.parse(JSON.stringify(demo));persist()}}
+    render();
+  </script>
 </body>
 </html>
