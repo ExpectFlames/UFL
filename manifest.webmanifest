@@ -1,0 +1,18 @@
+{
+  "name": "Project Alpha Finance",
+  "short_name": "Alpha",
+  "description": "Joseph's financial command center.",
+  "start_url": "/UFL/index.html?v=0.6.9",
+  "scope": "/UFL/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "icons": [
+    {
+      "src": "/UFL/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
