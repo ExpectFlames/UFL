@@ -130,7 +130,7 @@ jobs:
                   market_lines.append(
                       f"- {spread_note}: `{market['ticker']}` {market['title']} | YES bid {bid} / ask {ask} | volume {market['volume']}"
                   )
-              watches = "\n".join market_lines
+              watches = "\n".join(market_lines)
           else:
               watches = "No qualified setups found in this run."
 
