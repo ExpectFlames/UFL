@@ -37,6 +37,7 @@ jobs:
           from datetime import datetime, timezone
 
           webhook = os.environ.get("DISCORD_WEBHOOK_URL", "")
+          webhook = webhook.replace("https://discordapp.com/", "https://discord.com/")
           category = os.environ.get("SCAN_CATEGORY", "all")
           now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
@@ -66,7 +67,10 @@ jobs:
           req = urllib.request.Request(
               webhook,
               data=json.dumps({"content": body}).encode("utf-8"),
-              headers={"Content-Type": "application/json"},
+              headers={
+                  "Content-Type": "application/json",
+                  "User-Agent": "volcarus-analysis-desk/0.1"
+              },
               method="POST",
           )
 
