@@ -1,0 +1,75 @@
+name: Volcarus Scheduled Report
+
+on:
+  workflow_dispatch:
+    inputs:
+      category:
+        description: "Market category to scan"
+        required: true
+        default: "all"
+        type: choice
+        options:
+          - all
+          - nba
+          - crypto
+          - weather
+  schedule:
+    - cron: "*/30 * * * *"
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      ENABLE_TRADING: "false"
+      REPORT_STYLE: "template"
+      LOG_LEVEL: "INFO"
+      SCAN_CATEGORY: ${{ github.event.inputs.category || 'all' }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Post emergency report
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import urllib.request
+          from datetime import datetime, timezone
+
+          webhook = os.environ.get("DISCORD_WEBHOOK_URL", "")
+          category = os.environ.get("SCAN_CATEGORY", "all")
+          now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+
+          body = f"""**Volcarus Emergency Scheduled Report**
+Generated: {now}
+Category: {category}
+
+**Executive Summary**
+GitHub scheduled mode is online.
+
+**Actionable Watches**
+No qualified setups found yet. Full scanner code still needs to be uploaded to this repo.
+
+**Data Limitations**
+- Emergency workflow is running.
+- Trading is disabled.
+- This is not the full EC2 slash-command bot.
+
+**System Health**
+Trading disabled: True.
+"""
+
+          if not webhook:
+              raise SystemExit("DISCORD_WEBHOOK_URL secret is missing")
+
+          request = urllib.request.Request(
+              webhook,
+              data=json.dumps({"content": body}).encode("utf-8"),
+              headers={"Content-Type": "application/json"},
+              method="POST",
+          )
+          with urllib.request.urlopen(request, timeout=20) as response:
+              print("Discord post status:", response.status)
+          PY
