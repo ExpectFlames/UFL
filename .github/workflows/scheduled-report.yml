@@ -28,45 +28,170 @@ jobs:
       SCAN_CATEGORY: ${{ github.event.inputs.category || 'all' }}
 
     steps:
-      - name: Post emergency report to Discord
+      - name: Post Volcarus report to Discord
         shell: python
         run: |
           import json
           import os
           import urllib.request
-          from datetime import datetime, timezone
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
 
           webhook = os.environ.get("DISCORD_WEBHOOK_URL", "")
           webhook = webhook.replace("https://discordapp.com/", "https://discord.com/")
           category = os.environ.get("SCAN_CATEGORY", "all")
-          now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
           if not webhook:
               raise SystemExit("DISCORD_WEBHOOK_URL secret is missing")
 
-          body = "\n".join([
-              "**Volcarus Emergency Scheduled Report**",
-              f"Generated: {now}",
-              f"Category: {category}",
-              "",
-              "**Executive Summary**",
-              "GitHub scheduled mode is online.",
-              "",
-              "**Actionable Watches**",
-              "No qualified setups found yet. Full scanner code still needs to be uploaded to this repo.",
-              "",
-              "**Data Limitations**",
-              "- Emergency workflow is running.",
-              "- Trading is disabled.",
-              "- This is not the full EC2 slash-command bot.",
-              "",
-              "**System Health**",
-              "Trading disabled: True."
-          ])
+          eastern = ZoneInfo("America/New_York")
+          now = datetime.now(eastern)
+          hhmm = now.strftime("%H:%M")
+
+          standard_slots = {
+              "06:30": "Morning Desk Briefing",
+              "15:30": "Afternoon Desk Briefing",
+              "23:00": "Late Desk Briefing",
+          }
+
+          is_standard = hhmm in standard_slots
+          report_name = standard_slots.get(hhmm, "30-Minute Market Pulse")
+
+          def fetch_json(url, timeout=15):
+              req = urllib.request.Request(
+                  url,
+                  headers={"User-Agent": "volcarus-analysis-desk/0.1"},
+              )
+              try:
+                  with urllib.request.urlopen(req, timeout=timeout) as response:
+                      return json.loads(response.read().decode("utf-8"))
+              except Exception as exc:
+                  return {"error": str(exc)}
+
+          def coinbase(symbol):
+              product = "BTC-USD" if symbol == "BTC" else "ETH-USD"
+              data = fetch_json(f"https://api.exchange.coinbase.com/products/{product}/ticker")
+              if "error" in data:
+                  return f"{symbol}: unavailable"
+              price = data.get("price", "unknown")
+              return f"{symbol}: ${price}"
+
+          def kalshi_markets():
+              data = fetch_json("https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open")
+              if "error" in data:
+                  return [], data["error"]
+
+              markets = data.get("markets", [])
+              keywords = {
+                  "nba": ["nba", "basketball", "playoff", "points", "rebounds", "assists", "threes"],
+                  "crypto": ["bitcoin", "btc", "ethereum", "eth", "crypto"],
+                  "weather": ["weather", "temperature", "rain", "snow", "storm"],
+              }
+
+              selected = []
+              for market in markets:
+                  title = market.get("title") or market.get("subtitle") or market.get("ticker", "")
+                  ticker = market.get("ticker", "")
+                  text = f"{ticker} {title}".lower()
+
+                  if category == "all":
+                      matched = any(word in text for words in keywords.values() for word in words)
+                  else:
+                      matched = any(word in text for word in keywords.get(category, [category]))
+
+                  if matched:
+                      yes_bid = market.get("yes_bid")
+                      yes_ask = market.get("yes_ask")
+                      volume = market.get("volume") or market.get("volume_24h") or 0
+                      selected.append({
+                          "ticker": ticker,
+                          "title": title,
+                          "yes_bid": yes_bid,
+                          "yes_ask": yes_ask,
+                          "volume": volume,
+                      })
+
+              return selected[:6], None
+
+          markets, kalshi_error = kalshi_markets()
+          btc = coinbase("BTC")
+          eth = coinbase("ETH")
+
+          if markets:
+              market_lines = []
+              for market in markets:
+                  bid = market["yes_bid"]
+                  ask = market["yes_ask"]
+                  spread_note = "DATA_LIMITED"
+                  if bid is not None and ask is not None:
+                      spread = ask - bid
+                      spread_note = "WAIT_FOR_ENTRY" if spread <= 8 else "AVOID_SPREAD_TOO_WIDE"
+
+                  market_lines.append(
+                      f"- {spread_note}: `{market['ticker']}` {market['title']} | YES bid {bid} / ask {ask} | volume {market['volume']}"
+                  )
+              watches = "\n".join market_lines
+          else:
+              watches = "No qualified setups found in this run."
+
+          if kalshi_error:
+              watches = f"Kalshi scan unavailable this run: {kalshi_error}"
+
+          if is_standard:
+              sections = [
+                  f"**Volcarus {report_name}**",
+                  f"Generated: {now.strftime('%Y-%m-%d %I:%M %p ET')}",
+                  f"Category: {category}",
+                  "",
+                  "**1. Executive Summary**",
+                  "GitHub scheduled mode is online. This is the current automated analysis/report layer.",
+                  "",
+                  "**2. Best Actionable Watches**",
+                  watches,
+                  "",
+                  "**3. Crypto Reference**",
+                  f"- {btc}",
+                  f"- {eth}",
+                  "",
+                  "**4. Paper-Entry Candidates**",
+                  "No paper entries are being placed. GitHub mode is alert/report only.",
+                  "",
+                  "**5. Avoid / No-Trade Notes**",
+                  "Avoid wide spreads, unclear settlement rules, and low-liquidity markets.",
+                  "",
+                  "**6. Data Limitations**",
+                  "- NBA is DATA_LIMITED unless a sports odds provider is added.",
+                  "- GitHub mode is not the full EC2 slash-command bot.",
+                  "- No live trading is active.",
+                  "",
+                  "**7. Next Scheduled Check**",
+                  "A short market pulse runs about every 30 minutes. Standard briefings post at 6:30 AM, 3:30 PM, and 11:00 PM ET.",
+                  "",
+                  "**8. System Health**",
+                  "Trading disabled: True."
+              ]
+          else:
+              sections = [
+                  "**Volcarus 30-Minute Market Pulse**",
+                  f"Generated: {now.strftime('%Y-%m-%d %I:%M %p ET')}",
+                  f"Category: {category}",
+                  "",
+                  "**Actionable Watches**",
+                  watches,
+                  "",
+                  "**Crypto Reference**",
+                  f"- {btc}",
+                  f"- {eth}",
+                  "",
+                  "**Status**",
+                  "Trading disabled. Next standard briefing: 6:30 AM, 3:30 PM, or 11:00 PM ET."
+              ]
+
+          body = "\n".join(sections)
 
           req = urllib.request.Request(
               webhook,
-              data=json.dumps({"content": body}).encode("utf-8"),
+              data=json.dumps({"content": body[:1900]}).encode("utf-8"),
               headers={
                   "Content-Type": "application/json",
                   "User-Agent": "volcarus-analysis-desk/0.1"
